@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 from .forms import MoviesForm
 
@@ -12,13 +12,15 @@ def create(request):
         form = MoviesForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            response = HttpResponseRedirect("/movies/list")
+            response = redirect("movies:listView")
+            #maxID(json.loads(request.COOKIES['movie_list']))
+            print("this should be running second")
+            print(maxID(json.loads('[{"id": 1, "name": "what", "year": "2012", "actors": "actors"},{"id": 2, "name": "hi", "year": "2002", "actors": "actor5"}]')))
             formData = {'id':1,
             'name': request.POST['name'],
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
-            value = json.dumps(formData)
-            response.set_cookie(key="movie_list",value=value)
+            response.set_cookie(key="movie_list",value=json.dumps(formData))
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
@@ -29,6 +31,7 @@ def create(request):
     return render(request, "movies/form.html", {"form": form})
 
 def list(request):
+    print("this is running")
     movie_cookies = request.COOKIES
     movie_list = []
     response = render(request, "movies/cookies.html")
@@ -37,4 +40,9 @@ def list(request):
     else:
         response.set_cookie(key="movie_list", value=movie_list)
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
+
+def maxID(list):
+    for element in reversed(list):
+        if 'id' in element:
+            return element['id']+1
 # Create your views here.
