@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render
-
+import json
 from .forms import MoviesForm
 
 
@@ -12,10 +12,17 @@ def create(request):
         form = MoviesForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
+            response = HttpResponseRedirect("/movies/list")
+            formData = {'id':1,
+            'name': request.POST['name'],
+                'year': request.POST['year'],
+                'actors': request.POST['actors']}
+            value = json.dumps(formData)
+            response.set_cookie(key="movie_list",value=value)
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect("/movies/list")
+            return response
     # if a GET (or any other method) we'll create a blank form
     else:
         form = MoviesForm()
@@ -26,7 +33,7 @@ def list(request):
     movie_list = []
     response = render(request, "movies/cookies.html")
     if 'movie_list' in movie_cookies:
-        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
+        return render(request, "movies/cookies.html", context={'movie_list': request.COOKIES['movie_list']})
     else:
         response.set_cookie(key="movie_list", value=movie_list)
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
