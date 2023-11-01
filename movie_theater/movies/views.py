@@ -22,5 +22,11 @@ def create(request):
     return render(request, "movies/form.html", {"form": form})
 
 def list(request):
-	return HttpResponse("Hello, world. You're at the polls index.")
+    movie_cookies = request.COOKIES
+    movie_list = []
+    response = render(request, "movies/cookies.html")
+    if 'movie_list' in movie_cookies:
+        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
+    else:
+        response.set_cookie(key="movie_list", value=movie_list)
 # Create your views here.
