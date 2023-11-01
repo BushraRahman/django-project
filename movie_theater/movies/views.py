@@ -29,4 +29,5 @@ def list(request):
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
     else:
         response.set_cookie(key="movie_list", value=movie_list)
+        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
 # Create your views here.
