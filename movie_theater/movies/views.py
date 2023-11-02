@@ -4,6 +4,15 @@ from django.shortcuts import render, redirect
 import json
 from .forms import MoviesForm
 
+def list(request):
+    movie_cookies = request.COOKIES
+    movie_list = {}
+    response = render(request, "movies/cookies.html")
+    if 'movie_list' in movie_cookies:
+        return render(request, "movies/cookies.html", context={'movie_list': request.COOKIES['movie_list']})
+    else:
+        response.set_cookie(key="movie_list", value=movie_list)
+        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
 
 def create(request):
     # if this is a POST request we need to process the form data
@@ -37,16 +46,6 @@ def create(request):
     else:
         form = MoviesForm()
     return render(request, "movies/form.html", {"form": form})
-
-def list(request):
-    movie_cookies = request.COOKIES
-    movie_list = {}
-    response = render(request, "movies/cookies.html")
-    if 'movie_list' in movie_cookies:
-        return render(request, "movies/cookies.html", context={'movie_list': request.COOKIES['movie_list']})
-    else:
-        response.set_cookie(key="movie_list", value=movie_list)
-        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
 
 def maxID(list):
     if len(list) == 0:
