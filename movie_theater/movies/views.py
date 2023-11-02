@@ -8,6 +8,9 @@ from .forms import MoviesForm
 def create(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
+        data = """{"1": {"name": "what", "year": "2012", "actors": "actors"}, "2": {"name": "hi", "year": "2002", "actors": "actor5"}, "3": {"name": "hi", "year": "2002", "actors": "actor5"}}"""
+        print(maxID(json.loads(data)))
+        print(json.loads(data))
         # create a form instance and populate it with data from the request:
         form = MoviesForm(request.POST)
         # check whether it's valid:
@@ -15,8 +18,7 @@ def create(request):
             response = redirect("movies:listView")
             #maxID(json.loads(request.COOKIES['movie_list']))
             print("this should be running second")
-            print(maxID(json.loads('[{"id": 1, "name": "what", "year": "2012", "actors": "actors"},{"id": 2, "name": "hi", "year": "2002", "actors": "actor5"}]')))
-            formData = {'id':1,
+            formData = {
             'name': request.POST['name'],
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
@@ -42,7 +44,10 @@ def list(request):
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
 
 def maxID(list):
+    ids = []
     for element in reversed(list):
-        if 'id' in element:
-            return element['id']+1
+        for key in element:
+            ids.append(int(key))
+    return max(ids)+1
+
 # Create your views here.
