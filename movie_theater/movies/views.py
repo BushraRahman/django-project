@@ -13,6 +13,7 @@ def create(request):
         # check whether it's valid:
         if form.is_valid():
             response = HttpResponseRedirect("/movies/list")
+            print("do this second")
             formData = {'id':1,
             'name': request.POST['name'],
                 'year': request.POST['year'],
@@ -29,6 +30,7 @@ def create(request):
     return render(request, "movies/form.html", {"form": form})
 
 def list(request):
+    print("do this first")
     movie_cookies = request.COOKIES
     movie_list = []
     response = render(request, "movies/cookies.html")
