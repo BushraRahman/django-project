@@ -1,4 +1,25 @@
-{% extends "core/base.html" %}
-{% block content %}
-    {{ movie_list }}
-{% endblock content %}
+<table border=1>
+	<tr>
+		<th>Name</th>
+		<th>Year</th>
+		<th>Actors</th>
+		<th>Edit</th>
+		<th>Delete</th>
+	</tr>
+	{% for key, element in movie_list.items %}
+	<tr>
+		<td>{{ element.name }}</td>
+		<td>{{ element.year }}</td>
+		<td>{{ element.actors }}</td>
+		<td>
+			<form action="#" method="post">
+  		{% csrf_token %}
+  	 <input type="submit" class="btn" value="Edit" name="edit {{ key }}">  </td>
+		<td>
+			<form action="#" method="post">
+  		{% csrf_token %}
+  	 <input type="submit" class="btn" value="Delete" name="delete {{ key }}">  
+		</td>
+	</tr>
+	{% endfor %}
+</table>
