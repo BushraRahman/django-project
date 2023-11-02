@@ -41,7 +41,9 @@ def list(request):
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
 
 def maxID(list):
+    ids = []
     for element in reversed(list):
-        if 'id' in element:
-            return element['id']+1
+        for key in element:
+            ids.append(int(key))
+    return max(ids)+1
 # Create your views here.
