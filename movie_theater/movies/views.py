@@ -45,7 +45,7 @@ def create(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = MoviesForm()
-    return render(request, "movies/form.html", {"form": form})
+    return render(request, "form.html", {"form": form})
 
 def maxID(list):
     if len(list) == 0:
