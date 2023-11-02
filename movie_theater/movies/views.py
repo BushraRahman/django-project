@@ -37,4 +37,9 @@ def list(request):
     else:
         response.set_cookie(key="movie_list", value=movie_list)
         return render(request, "movies/cookies.html", context={'movie_list': movie_list})
+
+def maxID(list):
+    for element in reversed(list):
+        if 'id' in element:
+            return element['id']+1
 # Create your views here.
