@@ -5,4 +5,6 @@ from . import views
 urlpatterns = [
     path('/list', views.list, name="list"),
     path("/form", views.create),
+    path("/edit", views.edit),
+    path("/delete", views.delete)
 ]

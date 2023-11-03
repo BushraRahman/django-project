@@ -55,4 +55,10 @@ def maxID(list):
         for key in element:
             ids.append(int(key))
     return max(ids)+1
+
+def edit(request):
+    return HttpResponse("yo let's edit")
+
+def delete(request):
+    return HttpResponse("you sure about that...?")
 # Create your views here.

@@ -12,14 +12,17 @@
 		<td>{{ element.year }}</td>
 		<td>{{ element.actors }}</td>
 		<td>
-			<form action="#" method="post">
-  		{% csrf_token %}
-  	 <input type="submit" class="btn" value="Edit" name="edit {{ key }}">  </td>
+			<button type="button">
+  	  			<a href="http://localhost:8000/movies/edit"> Edit </a> 
+			</button>
+  	  	</td> 
 		<td>
-			<form action="#" method="post">
-  		{% csrf_token %}
-  	 <input type="submit" class="btn" value="Delete" name="delete {{ key }}">  
+			<button type="button">
+  	  			<a href="http://localhost:8000/movies/delete"> Delete </a> 
+			</button>
 		</td>
 	</tr>
 	{% endfor %}
 </table>
+
+
