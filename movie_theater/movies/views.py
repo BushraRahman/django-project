@@ -56,9 +56,9 @@ def maxID(list):
             ids.append(int(key))
     return max(ids)+1
 
-def edit(request):
+def edit(request, id):
     return HttpResponse("yo let's edit")
 
-def delete(request):
+def delete(request, id):
     return HttpResponse("you sure about that...?")
 # Create your views here.
