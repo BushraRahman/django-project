@@ -2,12 +2,12 @@
 <!--so create a html page with url view so you can view the data-->
 <form action="" method="post">
     {% csrf_token %}
-    {% comment %} <label for="name">Name:</label>
+    <label for="name">Name:</label>
     <input type="text" name="name" required>
     <label for="year">Year:</label>
     <input type="text" name="year" required>
     <label for="actors">Actors:</label>
-    <input type="text" name="actors" required> {% endcomment %}
+    <input type="textarea" name="actors" required>
     <input type="submit" value="Submit">
     {% comment %} <button type="submit">Submit</button> {% endcomment %}
 </form>

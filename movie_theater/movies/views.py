@@ -51,19 +51,22 @@ def create(request):
 def edit(request, id):
     if request.method == "POST":
         form = MoviesForm(request.POST)
+        movie_list = json.loads(request.COOKIES['movie_list'])
         if form.is_valid():
-            edited_movie = json.loads(request.COOKIES['movie_list'])[id]
+            edited_movie = movie_list[id]
             edited_movie['name'] = request.POST.get('name')
             edited_movie['year'] = request.POST.get('year')
             edited_movie['actors'] = request.POST.get('actors')
             return redirect('/movies')
+    return render(request, 'movies/cookies.html', {'movie_list': movie_list})
 
 def delete(request, id):
     if request.method == 'POST':
-        if 0 <= id < len(json.loads(request.COOKIES['movie_list'])):
-            json.loads(request.COOKIES['movie_list']).pop(id)
+        movie_list = json.loads(request.COOKIES['movie_list'])
+        if 0 <= id < len(movie_list):
+            movie_list.pop(id)
             return redirect('/movies')
-        
+    return render(request, 'movies/cookies.html', {'movie_list': movie_list})
 
 def maxID(list):
     if len(list) == 0:
