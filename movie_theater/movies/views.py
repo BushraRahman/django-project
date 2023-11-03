@@ -10,10 +10,10 @@ def list(request):
     movie_list = {}
     response = render(request, "movies/cookies.html")
     if 'movie_list' in movie_cookies:
-        return render(request, "movies/cookies.html", context={'movie_list': request.COOKIES['movie_list']})
+        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
     else:
         response.set_cookie(key="movie_list", value=movie_list)
-        return render(request, "movies/cookies.html", context={'movie_list': movie_list})
+        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
 
 def create(request):
     # if this is a POST request we need to process the form data
@@ -46,7 +46,7 @@ def create(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = MoviesForm()
-    return render(request, "form.html", {"form": form})
+    return render(request, "movies/form.html", {"form": form})
 
 def edit(request, id):
     if request.method == "POST":
@@ -76,4 +76,10 @@ def maxID(list):
         for key in element:
             ids.append(int(key))
     return max(ids)+1
+
+def edit(request):
+    return HttpResponse("yo let's edit")
+
+def delete(request):
+    return HttpResponse("you sure about that...?")
 # Create your views here.

@@ -1,22 +1,28 @@
-{% extends "core/base.html" %}
-{% block content %}
-    <button class="form">
-        <a href="/movies/add_movie">Add Movie</a>
-    </button>
-    <table>
-        <tr>
-            <td>Name</td>
-            <td>Year</td>
-            <td>Actors</td>
-            <td></td>
-        </tr>
-        {% for movie in movie_list %}
-        <tr>
-            <td>{{ movie.name }}</td>
-            <td>{{ movie.year }}</td>
-            <td>{{ movie.actors }}</td>
-            <td><div class="form"><a href="/recipes/edit_movie/" + {{movie.index}}>Edit Movie</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-{% endblock content %}
+<table border=1>
+	<tr>
+		<th>Name</th>
+		<th>Year</th>
+		<th>Actors</th>
+		<th>Edit</th>
+		<th>Delete</th>
+	</tr>
+	{% for key, element in movie_list.items %}
+	<tr>
+		<td>{{ element.name }}</td>
+		<td>{{ element.year }}</td>
+		<td>{{ element.actors }}</td>
+		<td>
+			<button type="button">
+  	  			<a href="http://localhost:8000/movies/edit"> Edit </a> 
+			</button>
+  	  	</td> 
+		<td>
+			<button type="button">
+  	  			<a href="http://localhost:8000/movies/delete"> Delete </a> 
+			</button>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+
+
