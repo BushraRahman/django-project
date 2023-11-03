@@ -1,7 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
 import json
+
+from django.shortcuts import redirect, render
 from .forms import MoviesForm
 
 def list(request):
@@ -46,6 +47,23 @@ def create(request):
     else:
         form = MoviesForm()
     return render(request, "form.html", {"form": form})
+
+def edit(request, id):
+    if request.method == "POST":
+        form = MoviesForm(request.POST)
+        if form.is_valid():
+            edited_movie = json.loads(request.COOKIES['movie_list'])[id]
+            edited_movie['name'] = request.POST.get('name')
+            edited_movie['year'] = request.POST.get('year')
+            edited_movie['actors'] = request.POST.get('actors')
+            return redirect('/movies')
+
+def delete(request, id):
+    if request.method == 'POST':
+        if 0 <= id < len(json.loads(request.COOKIES['movie_list'])):
+            json.loads(request.COOKIES['movie_list']).pop(id)
+            return redirect('/movies')
+        
 
 def maxID(list):
     if len(list) == 0:
