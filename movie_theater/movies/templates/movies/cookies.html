@@ -1,3 +1,4 @@
+{% load core_extras %}
 <table border=1>
 	<tr>
 		<th>Name</th>
@@ -13,12 +14,16 @@
 		<td>{{ element.actors }}</td>
 		<td>
 			<button type="button">
-  	  			<a href="http://localhost:8000/movies/edit"> Edit </a> 
+  	  			{% with "http://localhost:8000/movies/edit/"|concVar:key as link %}
+  	  			<a href={{ link }}> Edit </a> 
+  	  			{% endwith %}
 			</button>
   	  	</td> 
 		<td>
 			<button type="button">
-				<a href="http://localhost:8000/movies/delete"> Delete </a>
+				{% with "http://localhost:8000/movies/delete/"|concVar:key as link %}
+  	  			<a href={{ link }}> Delete </a> 
+  	  			{% endwith %}
 			</button>
 		</td>
 	</tr>

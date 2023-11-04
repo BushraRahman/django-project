@@ -1,6 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
+from django.contrib import messages
 import json
 from .forms import MoviesForm
 
@@ -9,38 +11,35 @@ def list(request):
     movie_list = {}
     response = render(request, "movies/cookies.html")
     if 'movie_list' in movie_cookies:
-        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
+        print(request.COOKIES['movie_list'])
+        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list'])})
     else:
-        response.set_cookie(key="movie_list", value=movie_list)
-        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
+        response.set_cookie(key="movie_list", value=json.dumps({}))
+        return render(request, "movies/cookies.html", context={'movie_list': {}})
 
 def create(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
-        #data = """{"1": {"name": "what", "year": "2012", "actors": "actors"}, "2": {"name": "hi", "year": "2002", "actors": "actor5"}, "3": {"name": "hi", "year": "2002", "actors": "actor5"}}"""
-        #print(maxID(json.loads(data)))
-        #print(json.loads(data))
-        # create a form instance and populate it with data from the request:
         form = MoviesForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
             response = redirect("list")
-            #maxID(json.loads(request.COOKIES['movie_list']))
-            if 'movie_list' not in request.COOKIES:
-                response.set_cookie("movie_list",{})
-                return response
-                #print(request.COOKIES)
-            print(request.COOKIES["movie_list"])
             formData = {
             'name': request.POST['name'],
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
-            newData = json.loads(request.COOKIES['movie_list'])
-            newData[maxID(json.loads(request.COOKIES['movie_list']))] = formData
-            response.set_cookie(key="movie_list",value=json.dumps(newData))
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
+            #maxID(json.loads(request.COOKIES['movie_list']))
+            if 'movie_list' not in request.COOKIES:
+                response.set_cookie(key="movie_list", value=json.dumps({1: formData}))
+            else:
+                cookieDict = json.loads(request.COOKIES['movie_list'])
+                newData = json.loads(request.COOKIES['movie_list'])
+                newData[maxID(cookieDict)] = formData
+                if(checkValid(request.POST['name'].casefold(),cookieDict)):
+                    response.set_cookie(key="movie_list",value=json.dumps(newData))
+                else:
+                    form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
+                    return render(request, "movies/form.html", {"form": form})
             return response
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -55,6 +54,13 @@ def maxID(list):
         for key in element:
             ids.append(int(key))
     return max(ids)+1
+
+def checkValid(name, list):
+    print(type(list))
+    for key, element in list.items():
+        if(element['name'].casefold() == name):
+            return False
+    return True
 
 def edit(request, id):
     return HttpResponse("yo let's edit")
