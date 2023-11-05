@@ -42,6 +42,7 @@ def create(request):
                 else:
                     form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
                     return render(request, "movies/form.html", {"form": form})
+            messages.add_message(request,messages.INFO,f"{request.POST['name']} was added.")
             return response
     # if a GET (or any other method) we'll create a blank form
     else:
