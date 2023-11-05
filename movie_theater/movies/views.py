@@ -10,10 +10,10 @@ def list(request):
     movie_list = {}
     response = render(request, "movies/cookies.html")
     if 'movie_list' in movie_cookies:
-        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
+        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'id': maxID(json.loads(request.COOKIES['movie_list']))-1})
     else:
         response.set_cookie(key="movie_list", value=movie_list)
-        return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list']), 'maxID': maxID(json.loads(request.COOKIES['movie_list']))-1})
+        return render(request, "movies/cookies.html", context={'movie_list': movie_list, 'id': maxID(movie_list)-1})
 
 def create(request):
     # if this is a POST request we need to process the form data
@@ -33,12 +33,12 @@ def create(request):
                 #print(request.COOKIES)
             print(request.COOKIES["movie_list"])
             formData = {
-            'name': request.POST['name'],
+                'name': request.POST['name'],
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
             newData = json.loads(request.COOKIES['movie_list'])
             newData[maxID(json.loads(request.COOKIES['movie_list']))] = formData
-            response.set_cookie(key="movie_list",value=json.dumps(newData))
+            response.set_cookie(key="movie_list", value=json.dumps(newData))
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
@@ -53,19 +53,19 @@ def edit(request, id):
         form = MoviesForm(request.POST)
         movie_list = json.loads(request.COOKIES['movie_list'])
         if form.is_valid():
-            edited_movie = movie_list[id]
+            edited_movie = movie_list[int(id)]
             edited_movie['name'] = request.POST.get('name')
             edited_movie['year'] = request.POST.get('year')
             edited_movie['actors'] = request.POST.get('actors')
-            return redirect('/movies')
+            return redirect('/')
     return render(request, 'movies/cookies.html', {'movie_list': movie_list})
 
 def delete(request, id):
     if request.method == 'POST':
         movie_list = json.loads(request.COOKIES['movie_list'])
         if 0 <= id < len(movie_list):
-            movie_list.pop(id)
-            return redirect('/movies')
+            movie_list.pop(int(id))
+            return redirect('/')
     return render(request, 'movies/cookies.html', {'movie_list': movie_list})
 
 def maxID(list):
@@ -76,10 +76,3 @@ def maxID(list):
         for key in element:
             ids.append(int(key))
     return max(ids)+1
-
-def edit(request):
-    return HttpResponse("yo let's edit")
-
-def delete(request):
-    return HttpResponse("you sure about that...?")
-# Create your views here.

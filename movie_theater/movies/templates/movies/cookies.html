@@ -1,28 +1,33 @@
+{% extends "core/base.html" %}
+{% load core_extras %}
+{% block content %}
+<button type="button"><a href="/form">Add New Movie</a></button>
 <table border=1>
 	<tr>
 		<th>Name</th>
 		<th>Year</th>
 		<th>Actors</th>
-		<th>Edit</th>
-		<th>Delete</th>
+		<th></th>
+		<th></th>
 	</tr>
-	{% for key, element in movie_list.items %}
+	{% for movie in movie_list %}
+    {% comment %} {% with info=movie_list|get_value_from_dict:id %} {% endcomment %}
 	<tr>
-		<td>{{ element.name }}</td>
-		<td>{{ element.year }}</td>
-		<td>{{ element.actors }}</td>
+		<td>{{movie.name}}</td>
+		<td>{{movie.year}}</td>
+		<td>{{movie.actors}}</td>
 		<td>
 			<button type="button">
-  	  			<a href="http://localhost:8000/movies/edit"> Edit </a> 
+  	  			<a href="/edit/{{ movie }}">Edit</a> 
 			</button>
   	  	</td> 
 		<td>
 			<button type="button">
-  	  			<a href="http://localhost:8000/movies/delete"> Delete </a> 
+  	  			<a href="/delete/{{ movie }}">Delete</a> 
 			</button>
 		</td>
 	</tr>
+    {% comment %} {% endwith %} {% endcomment %}
 	{% endfor %}
 </table>
-
-
+{% endblock content %}
