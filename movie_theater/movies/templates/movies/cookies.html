@@ -18,12 +18,16 @@
 		<td>{{movie.actors}}</td>
 		<td>
 			<button type="button">
-  	  			<a href="/edit/{{ movie }}">Edit</a> 
+  	  			{% with "/movies/edit/"|concVar:key as link %}
+  	  			<a href={{ link }}> Edit </a> 
+  	  			{% endwith %}
 			</button>
   	  	</td> 
 		<td>
 			<button type="button">
-  	  			<a href="/delete/{{ movie }}">Delete</a> 
+				{% with "/movies/delete/"|concVar:key as link %}
+  	  			<a href={{ link }}> Delete </a> 
+  	  			{% endwith %}
 			</button>
 		</td>
 	</tr>

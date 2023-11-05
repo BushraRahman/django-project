@@ -9,6 +9,8 @@
     <input type="text" name="year" required><br/><br/>
     <label for="actors">Actors:</label>
     <input type="textarea" name="actors" required><br/><br/>
+    {{ form }}
+    <!--{{ form.errors }}-->
     <input type="submit" value="Submit">
     {% comment %} <button type="submit">Submit</button> {% endcomment %}
 </form>
