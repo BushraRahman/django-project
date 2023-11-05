@@ -1,14 +1,11 @@
-{% extends "core/base.html" %}
 {% load core_extras %}
-{% block content %}
-<button type="button"><a href="/form">Add New Movie</a></button>
 <table border=1>
 	<tr>
 		<th>Name</th>
 		<th>Year</th>
 		<th>Actors</th>
-		<th></th>
-		<th></th>
+		<th>Edit</th>
+		<th>Delete</th>
 	</tr>
 	{% for movie in movie_list %}
     {% comment %} {% with info=movie|get_value_from_dict:id %} {% endcomment %}
@@ -31,7 +28,7 @@
 			</button>
 		</td>
 	</tr>
-    {% comment %} {% endwith %} {% endcomment %}
 	{% endfor %}
 </table>
-{% endblock content %}
+
+
