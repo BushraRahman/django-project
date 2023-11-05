@@ -1,4 +1,11 @@
 {% load core_extras %}
+{% if messages %}
+	{% for message in messages %}
+    {% if message.tags == 'info' %}
+    	{{ message }}
+    {% endif %}
+    {% endfor %}
+{% endif %}
 <table border=1>
 	<tr>
 		<th>Name</th>
