@@ -57,16 +57,6 @@ def edit(request, id):
         return render(request, "movies/edit.html")
     elif (form.is_valid()):
         return render(request, "movies/edit.html", context={'form': form})
-    response.set_cookie(key="movie_list", value=json.dumps())
-    # if request.method == "POST":
-    #     form = MoviesForm(request.POST)
-    #     movie_list = json.loads(request.COOKIES['movie_list'])
-    #     if form.is_valid():
-    #         edited_movie = movie_list[int(id)]
-    #         edited_movie['name'] = request.POST.get('name')
-    #         edited_movie['year'] = request.POST.get('year')
-    #         edited_movie['actors'] = request.POST.get('actors')
-    #         return render(request, 'movies/form.html', {'form': form})
 
 def maxID(list):
     if len(list) == 0:
