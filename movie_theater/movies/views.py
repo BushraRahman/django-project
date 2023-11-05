@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from django.contrib.messages import get_messages
 import json
 from .forms import MoviesForm
 
@@ -66,5 +67,21 @@ def edit(request, id):
     return HttpResponse("yo let's edit")
 
 def delete(request, id):
-    return HttpResponse("you sure about that...?")
+    response = redirect("list")
+    cookieDict = json.loads(request.COOKIES['movie_list'])
+    if (str(id) not in cookieDict):
+        messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be deleted since it does not exist.")
+        return render(request, "movies/delete.html")
+    else:
+        messages.add_message(request, messages.SUCCESS,f"{id}")
+        storage = get_messages(request)
+        for message in storage:
+            print(message)
+        if(request.GET.get('yes')):
+            del cookieDict[str(id)]
+            response.set_cookie(key="movie_list",value=json.dumps(cookieDict))
+            return response
+        if(request.GET.get('no')):
+            return response
+        return render(request, "movies/delete.html", context={'cookie': json.loads(request.COOKIES['movie_list'])[str(id)], 'id': id})
 # Create your views here.
