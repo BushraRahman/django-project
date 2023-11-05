@@ -42,6 +42,7 @@ def create(request):
                 else:
                     form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
                     return render(request, "movies/form.html", {"form": form})
+            messages.add_message(request,messages.INFO,f"{request.POST['name']} was added.")
             return response
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -77,11 +78,13 @@ def checkValid(name, list):
 
 def delete(request, id):
     response = redirect("list")
+    #messages.add_message(request,messages.SUCCESS,"yass")
     cookieDict = json.loads(request.COOKIES['movie_list'])
     if (str(id) not in cookieDict):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be deleted since it does not exist.")
         return render(request, "movies/delete.html")
     else:
+        name = cookieDict[str(id)]['name']
         messages.add_message(request, messages.SUCCESS,f"{id}")
         storage = get_messages(request)
         for message in storage:
@@ -89,8 +92,10 @@ def delete(request, id):
         if(request.GET.get('yes')):
             del cookieDict[str(id)]
             response.set_cookie(key="movie_list",value=json.dumps(cookieDict))
+            messages.add_message(request,messages.INFO,f"{name} was deleted.")
             return response
         if(request.GET.get('no')):
+            messages.add_message(request,messages.INFO,f"Deletion of {name} was cancelled.")
             return response
         return render(request, "movies/delete.html", context={'cookie': json.loads(request.COOKIES['movie_list'])[str(id)], 'id': id})
 # Create your views here.

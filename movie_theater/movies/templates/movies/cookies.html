@@ -2,6 +2,13 @@
 {% load core_extras %}
 {% block content %}
 <button type="button"><a href="form/">Add New Movie</a></button><br/><br/>
+{% if messages %}
+	{% for message in messages %}
+    {% if message.tags == 'info' %}
+    	{{ message }}
+    {% endif %}
+    {% endfor %}
+{% endif %}
 <table border=1>
 	<tr>
 		<th>Name</th>
