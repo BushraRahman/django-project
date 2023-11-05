@@ -1,4 +1,7 @@
+{% extends "core/base.html" %}
 {% load core_extras %}
+{% block content %}
+<button type="button"><a href="form/">Add New Movie</a></button><br/><br/>
 {% if messages %}
 	{% for message in messages %}
     {% if message.tags == 'info' %}
@@ -21,14 +24,14 @@
 		<td>{{ element.actors }}</td>
 		<td>
 			<button type="button">
-  	  			{% with "http://localhost:8000/movies/edit/"|concVar:key as link %}
+  	  			{% with "edit/"|concVar:key as link %}
   	  			<a href={{ link }}> Edit </a> 
   	  			{% endwith %}
 			</button>
   	  	</td> 
 		<td>
 			<button type="button">
-				{% with "http://localhost:8000/movies/delete/"|concVar:key as link %}
+				{% with "delete/"|concVar:key as link %}
   	  			<a href={{ link }}> Delete </a> 
   	  			{% endwith %}
 			</button>
@@ -36,3 +39,4 @@
 	</tr>
 	{% endfor %}
 </table>
+{% endblock content %}
