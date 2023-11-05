@@ -13,11 +13,11 @@ def list(request):
     movie_list = {}
     response = render(request, "movies/cookies.html")
     if 'movie_list' in movie_cookies:
-        print(request.COOKIES['movie_list'])
         return render(request, "movies/cookies.html", context={'movie_list': json.loads(request.COOKIES['movie_list'])})
     else:
+        response = render(request, "movies/cookies.html", context={'movie_list': {}})
         response.set_cookie(key="movie_list", value=json.dumps({}))
-        return render(request, "movies/cookies.html", context={'movie_list': {}})
+        return response
 
 def create(request):
     # if this is a POST request we need to process the form data
@@ -31,23 +31,23 @@ def create(request):
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
             #maxID(json.loads(request.COOKIES['movie_list']))
-            if 'movie_list' not in request.COOKIES:
-                response.set_cookie(key="movie_list", value=json.dumps({1: formData}))
+            cookieDict = json.loads(request.COOKIES['movie_list'])
+            newData = json.loads(request.COOKIES['movie_list'])
+            newData[maxID(cookieDict)] = formData
+            if(checkValid(request.POST['name'].casefold(),cookieDict)):
+                response.set_cookie(key="movie_list",value=json.dumps(newData))
             else:
-                cookieDict = json.loads(request.COOKIES['movie_list'])
-                newData = json.loads(request.COOKIES['movie_list'])
-                newData[maxID(cookieDict)] = formData
-                if(checkValid(request.POST['name'].casefold(),cookieDict)):
-                    response.set_cookie(key="movie_list",value=json.dumps(newData))
-                else:
-                    form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
-                    return render(request, "movies/form.html", {"form": form})
+                form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
+                return render(request, "movies/form.html", {"form": form})
             messages.add_message(request,messages.INFO,f"{request.POST['name']} was added.")
             return response
     # if a GET (or any other method) we'll create a blank form
     else:
         form = MoviesForm()
-    return render(request, "movies/form.html", {"form": form})
+        response = render(request, "movies/form.html", {"form": form})
+        if 'movie_list' not in request.COOKIES:
+            response.set_cookie(key="movie_list", value=json.dumps({}))
+        return response 
 
 def edit(request, id):
     response = redirect('/')
@@ -89,9 +89,13 @@ def checkValid(name, list):
 def delete(request, id):
     response = redirect("list")
     #messages.add_message(request,messages.SUCCESS,"yass")
-    cookieDict = json.loads(request.COOKIES['movie_list'])
+    try:
+        cookieDict = json.loads(request.COOKIES['movie_list'])
+    except KeyError:
+        return emptyCookie(redirect("delete",id))
     if (str(id) not in cookieDict):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be deleted since it does not exist.")
+        print("??")
         return render(request, "movies/delete.html")
     else:
         name = cookieDict[str(id)]['name']
@@ -109,3 +113,7 @@ def delete(request, id):
             return response
         return render(request, "movies/delete.html", context={'cookie': json.loads(request.COOKIES['movie_list'])[str(id)], 'id': id})
 # Create your views here.
+
+def emptyCookie(response, id=0):
+    response.set_cookie(key="movie_list", value=json.dumps({}))
+    return response
