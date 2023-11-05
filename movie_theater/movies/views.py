@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.messages import get_messages
 import json
+
 from .forms import MoviesForm
 
 def list(request):
@@ -26,7 +27,7 @@ def create(request):
         if form.is_valid():
             response = redirect("list")
             formData = {
-            'name': request.POST['name'],
+                'name': request.POST['name'],
                 'year': request.POST['year'],
                 'actors': request.POST['actors']}
             #maxID(json.loads(request.COOKIES['movie_list']))
@@ -47,6 +48,26 @@ def create(request):
         form = MoviesForm()
     return render(request, "movies/form.html", {"form": form})
 
+def edit(request, id):
+    if request.method == "POST":
+        form = MoviesForm(request.POST)
+        movie_list = json.loads(request.COOKIES['movie_list'])
+        if form.is_valid():
+            edited_movie = movie_list[int(id)]
+            edited_movie['name'] = request.POST.get('name')
+            edited_movie['year'] = request.POST.get('year')
+            edited_movie['actors'] = request.POST.get('actors')
+            return redirect('/')
+    return render(request, 'movies/cookies.html', {'movie_list': movie_list})
+
+def delete(request, id):
+    if request.method == 'POST':
+        movie_list = json.loads(request.COOKIES['movie_list'])
+        if 0 <= id < len(movie_list):
+            movie_list.pop(int(id))
+            return redirect('/')
+    return render(request, 'movies/cookies.html', {'movie_list': movie_list})
+
 def maxID(list):
     if len(list) == 0:
         return 1
@@ -54,6 +75,7 @@ def maxID(list):
     for element in reversed(list):
         for key in element:
             ids.append(int(key))
+    return max(ids)+1
     return max(ids)+1
 
 def checkValid(name, list):
