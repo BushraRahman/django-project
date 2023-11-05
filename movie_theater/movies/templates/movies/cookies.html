@@ -11,23 +11,23 @@
 		<th></th>
 	</tr>
 	{% for movie in movie_list %}
-    {% comment %} {% with info=movie_list|get_value_from_dict:id %} {% endcomment %}
+    {% comment %} {% with info=movie|get_value_from_dict:id %} {% endcomment %}
 	<tr>
-		<td>{{movie.name}}</td>
-		<td>{{movie.year}}</td>
-		<td>{{movie.actors}}</td>
+		<td>{{ movie.name }}</td>
+		<td>{{ movie.year }}</td>
+		<td>{{ movie.actors }}</td>
 		<td>
 			<button type="button">
-  	  			{% with "/movies/edit/"|concVar:key as link %}
-  	  			<a href={{ link }}> Edit </a> 
-  	  			{% endwith %}
+  	  			{% comment %} {% with movie|concVar:key as link %} {% endcomment %}
+  	  			<a href="/edit/{{movie}}"> Edit </a> 
+  	  			{% comment %} {% endwith %} {% endcomment %}
 			</button>
   	  	</td> 
 		<td>
 			<button type="button">
-				{% with "/movies/delete/"|concVar:key as link %}
-  	  			<a href={{ link }}> Delete </a> 
-  	  			{% endwith %}
+				{% comment %} {% with "movies/delete/"|concVar:key as link %} {% endcomment %}
+  	  			<a href="/delete/{{movie}}"> Delete </a> 
+  	  			{% comment %} {% endwith %} {% endcomment %}
 			</button>
 		</td>
 	</tr>
