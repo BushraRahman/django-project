@@ -67,6 +67,7 @@ def edit(request, id):
             'actors': request.POST.get('actors')
         }
         response.set_cookie(key="movie_list", value=json.dumps({id: updates}))
+        return response
     return render(request, "movies/edit.html", {'form': form})
 
 def maxID(list):
