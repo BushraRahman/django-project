@@ -57,7 +57,13 @@ def edit(request, id):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be edited since it does not exist.")
         return render(request, "movies/edit.html")
     elif (form.is_valid()):
-        return render(request, "movies/edit.html", context={'form': form})
+        updates = {
+            'name': request.POST.get('name'),
+            'year': request.POST.get('year'),
+            'actors': request.POST.get('actors')
+        }
+        response.set_cookie(key="movie_list", value=json.dumps({id: updates}))
+    return render(request, "movies/edit.html", {'form': form})
 
 def maxID(list):
     if len(list) == 0:
