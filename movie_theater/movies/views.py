@@ -34,7 +34,7 @@ def create(request):
             cookieDict = json.loads(request.COOKIES['movie_list'])
             newData = json.loads(request.COOKIES['movie_list'])
             newData[maxID(cookieDict)] = formData
-            if(checkValid(request.POST['name'].casefold(),cookieDict)):
+            if(checkValid(request.POST['name'].casefold(),cookieDict,maxID(cookieDict))):
                 response.set_cookie(key="movie_list",value=json.dumps(newData))
             else:
                 form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
@@ -59,6 +59,9 @@ def edit(request, id):
     if(str(id) not in cookieDict):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be edited since it does not exist.")
         return render(request, "movies/edit.html", context={"show": True})
+    else:
+        messages.add_message(request, messages.SUCCESS,f"{id}")
+        storage = get_messages(request)
     if request.method == "POST":
         form = MoviesForm(request.POST)
         if form.is_valid():
@@ -69,12 +72,12 @@ def edit(request, id):
             }
             newData = json.loads(request.COOKIES['movie_list'])
             newData[id] = updates
-            if(checkValid(request.POST['name'].casefold(),cookieDict)):
+            if(checkValid(request.POST['name'].casefold(),cookieDict,id)):
                 response.set_cookie(key="movie_list",value=json.dumps(newData))
             else:
                 form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
                 return render(request, "movies/edit.html", {"form": form})
-            messages.add_message(request,messages.INFO,f"{request.POST['name']} was edited.")
+            messages.add_message(request,messages.INFO,"The movie was edited.")
             return response
     else:
         form = MoviesForm(cookieDict[str(id)])
@@ -91,10 +94,9 @@ def maxID(list):
     return max(ids)+1
     return max(ids)+1
 
-def checkValid(name, list):
-    print(type(list))
+def checkValid(name, list, id):
     for key, element in list.items():
-        if(element['name'].casefold() == name):
+        if(element['name'].casefold() == name and key!=str(id)):
             return False
     return True
 

@@ -12,6 +12,12 @@
     {% csrf_token %}
     {{ form }}
     <!--{{ form.errors }}-->
-    <input type="submit" value="Update">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+        <input type="submit" value="Update">
+    {% endif %}
+    {% endfor %}
+{% endif %}
 </form>
 {% endblock content %}
