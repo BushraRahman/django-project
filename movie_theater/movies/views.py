@@ -56,18 +56,29 @@ def edit(request, id):
         return response
     response = redirect('/')
     cookieDict = json.loads(request.COOKIES['movie_list'])
-    form = MoviesForm(cookieDict[str(id)])
-    if (str(id) not in cookieDict):
+    if(str(id) not in cookieDict):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be edited since it does not exist.")
-        return render(request, "movies/edit.html")
-    elif (form.is_valid()):
-        updates = {
+        return render(request, "movies/edit.html", context={"show": True})
+    if request.method == "POST":
+        form = MoviesForm(request.POST)
+        if form.is_valid():
+            updates = {
             'name': request.POST.get('name'),
             'year': request.POST.get('year'),
             'actors': request.POST.get('actors')
-        }
-        response.set_cookie(key="movie_list", value=json.dumps({id: updates}))
-        return response
+            }
+            newData = json.loads(request.COOKIES['movie_list'])
+            newData[id] = updates
+            if(checkValid(request.POST['name'].casefold(),cookieDict)):
+                response.set_cookie(key="movie_list",value=json.dumps(newData))
+            else:
+                form.add_error("name",ValidationError((f"{request.POST['name']} is already in the list."), code="invalid"))
+                return render(request, "movies/edit.html", {"form": form})
+            messages.add_message(request,messages.INFO,f"{request.POST['name']} was edited.")
+            return response
+    else:
+        form = MoviesForm(cookieDict[str(id)])
+        return render(request, "movies/edit.html", {'form': form})
     return render(request, "movies/edit.html", {'form': form})
 
 def maxID(list):
@@ -96,7 +107,6 @@ def delete(request, id):
         return emptyCookie(redirect("delete",id))
     if (str(id) not in cookieDict):
         messages.add_message(request, messages.ERROR, f"Error: ID {id} cannot be deleted since it does not exist.")
-        print("??")
         return render(request, "movies/delete.html")
     else:
         name = cookieDict[str(id)]['name']

@@ -1,11 +1,17 @@
 {% extends "core/base.html" %}
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+        {{ message }}
+    {% endif %}
+    {% endfor %}
+{% endif %}
 <!--so create a html page with url view so you can view the data-->
 <form action="" method="post">
     {% csrf_token %}
     {{ form }}
     <!--{{ form.errors }}-->
     <input type="submit" value="Update">
-    {% comment %} <button type="submit">Submit</button> {% endcomment %}
 </form>
 {% endblock content %}
