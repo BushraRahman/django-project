@@ -50,6 +50,10 @@ def create(request):
         return response 
 
 def edit(request, id):
+    if ("movie_list" not in request.COOKIES):
+        response = redirect("edit", id)
+        response.set_cookie(key="movie_list", value=json.dumps({}))
+        return response
     response = redirect('/')
     cookieDict = json.loads(request.COOKIES['movie_list'])
     form = MoviesForm(cookieDict[str(id)])
